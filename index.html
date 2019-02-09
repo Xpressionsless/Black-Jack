@@ -1,18 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<title>Black Jack</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 	<link rel="stylesheet" href="black-jack.css">
 </head>
 <body>
-	
-	<h1>Black Jack</h1>
-	<div id="output-area"></div>
-	<button id="NewGame">New Game!</button>
-	<button id="Hit" onclick="show()">Hit</button>
-	<button id="Stay">Stay!</button>
-	<div id="winner-area"></div>
+	<div class="article container-fluid">
+		<h1 class="display-3">Black Jack</h1>
+		<div id="output-area"></div>
+		<button class="btn btn-sm btn-success" id="newGame">New Game!</button>
+		<button class="btn btn-sm btn-success" id="hitGame">Hit</button>
+		<button class="btn btn-sm btn-warning" id="stayGame">Stay!</button>
+		<div id="winner-area"></div>
+	</div>
 <script src="black-jack.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 </body>
 </html>

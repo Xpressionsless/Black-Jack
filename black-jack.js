@@ -197,16 +197,35 @@ var cards = [
 var deck = [];
 var dealer = []; var player = [];
 var outputarea = document.getElementById('output-area');
-function show() {
-  shuffleDeck(cards);
-  dealInitialCard();
+document.getElementById('newGame').addEventListener('click', startNewGame);
+document.getElementById('stayGame').addEventListener('click', stayGame);
+document.getElementById('hitGame').addEventListener('click', hitGame);
+var newGame = document.getElementById('newGame');
+var stayGame = document.getElementById('stayGame');
+var hitGame = document.getElementById('hitGame');
+var playerScore;
+var dealerScore;
+stayGame.disabled = true
+hitGame.disabled = true
+function startNewGame() {
+  // shuffleDeck(cards);
+  // dealInitialCard();
+  newGame.disabled = true
+  stayGame.disabled = false
+  hitGame.disabled = false
+}
+function stayGame() {
+
+}
+function hitGame() {
+
 }
 
 function shuffleDeck(OriginalCardsArray) {
   var tmpDeck = OriginalCardsArray.slice(0);
 
   for (var i = 0; i < tmpDeck.length; i++) {
-    if (tmpDeck === null) {return false; }
+    if (tmpDeck === null) { return false; }
 
     var pos = tmpDeck[Math.random() * tmpDeck.length >> 0];
     if (pos === deck[i]) {
@@ -221,31 +240,43 @@ function drawCard() {
   return deck.shift();
 }
 
-function showHands() {
-  var playerCards = [];
-  var dealerCards = [];
+function showHand(hand, score) {
+  var cards = '';
+  for (var j = 0; j < hand.length; j++) {
+    cards += hand[j]['card'] + '\t';
+    console.log('Player and deler Array length: ' + cards + ' ');
+  }
+  outputarea.innerHTML += cards + ' ' + score + '<br>';
 
-  for (var i = 0; i < player.length; i++) {
-    playerCards.push(player[i]);
-    dealerCards.push(dealer[i]);
+}
+//ClearTable();
+function dealInitialCard() {
+  player = []; dealer = [];
+  for (var i = 0; i < 2; i++) {
+    player.push(drawCard());
+    dealer.push(drawCard());
+    console.log('Player and Dealer: ' + player[i]['card'] + ' | ' + dealer[i].card);
   }
 
-  //
-  var slicedPlayerCards = playerCards.join(' ');
-  var slicedDealerCards = dealerCards.join(' ');
-  for (var j = 0; j < slicedPlayerCards.length; j++) {
-    outputarea.innerHTML = slicedPlayerCards + '<br>' + slicedDealerCards;
-  }
-
-  console.log('Player and deler Array length: ' + slicedPlayerCards + ' ' + slicedDealerCards);
+  playerScore = calculateHand(player);
+  dealerScore = calculateHand(dealer)
+  showHand(player, playerScore)
+  showHand(dealer, dealerScore)
 }
 
-function dealInitialCard() {
-  for (var i = 0; i < 2; i++) {
-    player.push(drawCard().card);
-    dealer.push(drawCard().card);
-  }
+function ClearTable() {
+  outputarea.innerHTML = '';
+}
 
-  console.log('Player and Dealer: ' + player + ' | ' + dealer);
-  showHands();
+function calculateHand(cards) {
+  var score = 0;
+  cards.forEach(card => {
+    var value = card.value;
+    if (value === 1) {
+      score += 10;
+    } else if (score < 21) {
+      score += value;
+    }
+  });
+  return score;
 }

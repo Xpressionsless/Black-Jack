@@ -1,3 +1,11 @@
+
+var outputarea = document.getElementById('output-area');
+document.getElementById('newGame').addEventListener('click', startNewGame);
+document.getElementById('stayGame').addEventListener('click', stayGame);
+document.getElementById('hitGame').addEventListener('click', hitGame);
+var newGame = document.getElementById('newGame');
+var stayGame = document.getElementById('stayGame');
+var hitGame = document.getElementById('hitGame');
 var cards = [
 
   {
@@ -195,88 +203,114 @@ var cards = [
 ];
 
 var deck = [];
-var dealer = []; var player = [];
-var outputarea = document.getElementById('output-area');
-document.getElementById('newGame').addEventListener('click', startNewGame);
-document.getElementById('stayGame').addEventListener('click', stayGame);
-document.getElementById('hitGame').addEventListener('click', hitGame);
-var newGame = document.getElementById('newGame');
-var stayGame = document.getElementById('stayGame');
-var hitGame = document.getElementById('hitGame');
-var playerScore;
-var dealerScore;
+var dealer = []; 
+var player = [];
+
+var playerScore = 0;
+var dealerScore = 0;
+
 stayGame.disabled = true
 hitGame.disabled = true
+
 function startNewGame() {
-  // shuffleDeck(cards);
-  // dealInitialCard();
+  deck = [];dealer = []; player = [];
+  shuffleDeck(cards);
+  dealInitialCard();
+  // for (let i = 0; i < deck.length; i++) {
+  //   const element = deck[i].card;
+  //   console.log(deck.length);
+  //   outputarea.innerHTML += deck[i].card
+  // }
+  
+  
   newGame.disabled = true
   stayGame.disabled = false
   hitGame.disabled = false
 }
 function stayGame() {
-
+  ClearTable()
+  hitGame.disabled = true
+  stayGameAndshowCards(playerScore)
+  stayGameAndshowCards(dealerScore)
 }
 function hitGame() {
-
+  dealAnotherCard()
+  console.log('Deck lenght is now: ' + deck.length )
+  showHands()
 }
-
-function shuffleDeck(OriginalCardsArray) {
-  var tmpDeck = OriginalCardsArray.slice(0);
-
-  for (var i = 0; i < tmpDeck.length; i++) {
-    if (tmpDeck === null) { return false; }
-
-    var pos = tmpDeck[Math.random() * tmpDeck.length >> 0];
-    if (pos === deck[i]) {
-      return false;
-    } else {
-      deck.push(pos);
-    }
+// Shuffler hela array och tar slumpmässig kort från tmpDeck och filla "deck" array med de
+function shuffleDeck(arr) {
+  let newPos, tempDeck;
+  for (let i = arr.length-1; i > 0; i--) {
+    newPos = Math.floor(Math.random() * (i+1))
+    tempDeck = arr[i]
+    arr[i] = arr[newPos]
+    arr[newPos] = tempDeck
+  }
+  for (let i = 0; i < arr.length; i++) {
+    deck.push(arr[i])
   }
 }
-
 function drawCard() {
   return deck.shift();
-}
-
-function showHand(hand, score) {
-  var cards = '';
-  for (var j = 0; j < hand.length; j++) {
-    cards += hand[j]['card'] + '\t';
-    console.log('Player and deler Array length: ' + cards + ' ');
-  }
-  outputarea.innerHTML += cards + ' ' + score + '<br>';
-
-}
-//ClearTable();
-function dealInitialCard() {
-  player = []; dealer = [];
-  for (var i = 0; i < 2; i++) {
-    player.push(drawCard());
-    dealer.push(drawCard());
-    console.log('Player and Dealer: ' + player[i]['card'] + ' | ' + dealer[i].card);
-  }
-
-  playerScore = calculateHand(player);
-  dealerScore = calculateHand(dealer)
-  showHand(player, playerScore)
-  showHand(dealer, dealerScore)
 }
 
 function ClearTable() {
   outputarea.innerHTML = '';
 }
 
+function showHand(hand, score) {
+  var cards = ''
+  for (let i = 0; i < hand.length; i++) {
+    cards += hand[i].card;
+  }
+  console.log('showHands function: ' + `${cards}` + '\n' + `${score}`);
+  return outputarea.innerHTML += `${cards}` + `${score}` + '<br>'
+}
+
+function showHands() {
+  ClearTable();
+  playerScore = calculateHand(player)
+  dealerScore = calculateHand(dealer)
+  showHand(player, playerScore)
+  showHand(dealer, dealerScore)
+  dealAnotherCard(player)
+  dealAnotherCard(dealer)
+}
+function dealInitialCard() {
+  for (var i = 0; i < 2; i++) {
+      player.push(drawCard());
+      dealer.push(drawCard());
+  }
+  showHands()
+}
+function dealAnotherCard(hand) {
+  return hand.push(drawCard())
+}
+
 function calculateHand(cards) {
   var score = 0;
   cards.forEach(card => {
-    var value = card.value;
-    if (value === 1) {
-      score += 10;
-    } else if (score < 21) {
-      score += value;
-    }
+    score += card.value
   });
+  cards.find(function (card) {
+    if (card.value === 1) {
+      if ((score + 10) < 21) {
+        score += 10
+      }
+    }
+  })
   return score;
+}
+
+// Stay function
+function stayGameAndshowCards(score) {
+  //var slipedArray = storedCardArray.slice(0)
+
+  storedCardArray.forEach(index => {
+  //console.log('checking stored Card object: ' + `${storedCardArray[index].card}`);
+  console.log('checking stored Card object: ' + index.card);
+  outputarea.innerHTML += `${index.card}` + score
+  });
+  
 }

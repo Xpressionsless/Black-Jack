@@ -1,11 +1,12 @@
 
 var outputarea = document.getElementById('output-area');
 document.getElementById('newGame').addEventListener('click', startNewGame);
-document.getElementById('stayGame').addEventListener('click', stayGame);
+document.getElementById('stayGame').addEventListener('click', determineWinner);
 document.getElementById('hitGame').addEventListener('click', hitGame);
 var newGame = document.getElementById('newGame');
 var stayGame = document.getElementById('stayGame');
 var hitGame = document.getElementById('hitGame');
+var winnerArea = document.getElementById('winner-area');
 var cards = [
 
   {
@@ -212,31 +213,45 @@ var dealerScore = 0;
 stayGame.disabled = true
 hitGame.disabled = true
 
+var dealerWins = 'Dealer Win'
+var playerWins = 'You Win'
+var draw = 'Draw Game!'
+
 function startNewGame() {
   deck = [];dealer = []; player = [];
   shuffleDeck(cards);
   dealInitialCard();
-  // for (let i = 0; i < deck.length; i++) {
-  //   const element = deck[i].card;
-  //   console.log(deck.length);
-  //   outputarea.innerHTML += deck[i].card
-  // }
-  
+  var playersHasBJack = hasBlackJack(player, playerScore) 
+  var dealerHasBJack = hasBlackJack(player, dealerScore) 
+  if (playersHasBJack) {
+    winnerArea.innerHTML = playerWins
+  } else if(dealerHasBJack) {
+    winnerArea.innerHTML = dealerWins
+  }
   
   newGame.disabled = true
   stayGame.disabled = false
   hitGame.disabled = false
 }
-function stayGame() {
-  ClearTable()
-  hitGame.disabled = true
-  stayGameAndshowCards(playerScore)
-  stayGameAndshowCards(dealerScore)
+//Determine Winner
+function determineWinner(stayed) {
+  console.log('Stay Game button clicked')
+  stayed = ture
+  return true
 }
 function hitGame() {
   dealAnotherCard()
   console.log('Deck lenght is now: ' + deck.length )
   showHands()
+  var playerBusted = isbust(playerScore)
+  var dealerBusted = isbust(dealerScore)
+  if (playerBusted) {
+    winnerArea.innerHTML = dealerWins
+    hitGame.disabled = true
+  } else if (dealerBusted) {
+    winnerArea.innerHTML = playerWins
+    hitGame.disabled = true
+  }
 }
 // Shuffler hela array och tar slumpmässig kort från tmpDeck och filla "deck" array med de
 function shuffleDeck(arr) {
@@ -274,8 +289,6 @@ function showHands() {
   dealerScore = calculateHand(dealer)
   showHand(player, playerScore)
   showHand(dealer, dealerScore)
-  dealAnotherCard(player)
-  dealAnotherCard(dealer)
 }
 function dealInitialCard() {
   for (var i = 0; i < 2; i++) {
@@ -285,7 +298,28 @@ function dealInitialCard() {
   showHands()
 }
 function dealAnotherCard(hand) {
-  return hand.push(drawCard())
+  player.push(drawCard())
+  dealer.push(drawCard())
+}
+
+function hitGameEvent() {
+  ClearTable()
+  dealAnotherCard()
+  dealAnotherCard()
+  showHands()
+  console.log('Player and Dealer length in showHands() function: ' + player.length + "\n" + dealer.length);
+}
+// find BlackJack
+function hasBlackJack(hand, score) {
+  if((hand.length === 2) && (score === 21) ) {
+    return true
+  }
+}
+// Find if is Busted
+function isbust(score) {
+  if(score > 21) {
+    return true
+  }
 }
 
 function calculateHand(cards) {
@@ -293,24 +327,13 @@ function calculateHand(cards) {
   cards.forEach(card => {
     score += card.value
   });
+  
   cards.find(function (card) {
     if (card.value === 1) {
-      if ((score + 10) < 21) {
+      if ((score + 10) <= 21) {
         score += 10
       }
     }
   })
   return score;
-}
-
-// Stay function
-function stayGameAndshowCards(score) {
-  //var slipedArray = storedCardArray.slice(0)
-
-  storedCardArray.forEach(index => {
-  //console.log('checking stored Card object: ' + `${storedCardArray[index].card}`);
-  console.log('checking stored Card object: ' + index.card);
-  outputarea.innerHTML += `${index.card}` + score
-  });
-  
 }

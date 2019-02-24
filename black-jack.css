@@ -8,12 +8,11 @@
 	font-size: 60pt;
 }
 #winner-area {
-	font-style: 25pt;
-}
-#winner-area {
 	font-size: 40px;
 	font-weight: bold;
 	font-family: "Times New Roman", Times, serif;
+	text-align: center;
+	margin-top: 2rem;
 }
 .cards-row {
 	min-height: 22rem

@@ -9,12 +9,20 @@
 	<link rel="stylesheet" href="black-jack.css">
 </head>
 <body>
-	<div class="article container-fluid">
-		<h1 class="display-3">Black Jack</h1>
-		<div id="output-area"></div>
-		<button class="btn btn-sm btn-success" id="newGame">New Game!</button>
-		<button class="btn btn-sm btn-success" id="hitGame">Hit</button>
-		<button class="btn btn-sm btn-warning" id="stayGame">Stay!</button>
+	<div class="article container">
+		<div class="row cards-row">
+			<div class="col-sm-12">
+				<h1 class="display-3">Black Jack</h1>
+				<div id="output-area"></div>
+			</div>
+		</div>
+		<div class="row buttons-row">
+			<div class="col-sm-6 offset-sm-3 btn-group">
+				<button class="btn btn-sm btn-success w-100 mr-5" id="newGame">New Game!</button>
+				<button class="btn btn-sm btn-primary w-100 mr-5" id="hitGame">Hit</button>
+				<button class="btn btn-sm btn-warning w-100" id="stayGame">Stay!</button>
+			</div>
+		</div>
 		<div id="winner-area"></div>
 	</div>
 <script src="black-jack.js"></script>

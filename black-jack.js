@@ -220,6 +220,10 @@ var playerWins = 'You Win'
 var draw = 'Draw Game!'
 
 function startNewGame() {
+  
+  newGame.disabled = true
+  stayGame.disabled = false
+  hitGame.disabled = false
   deck = [];dealer = []; player = [];
   shuffleDeck(cards);
   dealInitialCard();
@@ -236,28 +240,6 @@ function startNewGame() {
     stayGame.disabled = true
     hitGame.disabled = true
   }
-  
-  newGame.disabled = true
-  stayGame.disabled = false
-  hitGame.disabled = false
-}
-//Determine Winner
-function determineWinner(stayed) {
-  drawDealerCards()
-  var newScore = checkScore(playerScore, dealerScore)
-  var dealerBusted = isbust(dealerScore)
-  if (newScore) {
-  winnerArea.innerHTML = dealerWins
-  stayGame.disabled = true
-  newGame.disabled = false
-  hitGame.disabled = true
-} else if(pBusted) {
-  winnerArea.innerHTML = playerWins
-  stayGame.disabled = true
-  newGame.disabled = false
-  hitGame.disabled = true
-}
-  showHands()
 }
 function hitGame() {
   dealAnotherCard()
@@ -273,6 +255,23 @@ function hitGame() {
     stayGame.disabled = true
     newGame.disabled = false
   }
+  showHands()
+}
+//Determine Winner
+function determineWinner(stayed) {
+  hitGame.disabled = true
+  drawDealerCards()
+  var newScore = checkScore(playerScore, dealerScore)
+  var dealerBusted = isbust(dealerScore)
+  if (pBusted || newScore) {
+  winnerArea.innerHTML = dealerWins
+  stayGame.disabled = true
+  newGame.disabled = false
+} else if(dBusted) {
+  winnerArea.innerHTML = playerWins
+  stayGame.disabled = true
+  newGame.disabled = false
+}
   showHands()
 }
 // Shuffler hela array och tar slumpmässig kort från tmpDeck och filla "deck" array med de
@@ -340,10 +339,12 @@ function showHands() {
   showHand(dealer, dealerScore)
 }
 function dealInitialCard() {
-  for (var i = 0; i < 2; i++) {
-      player.push(drawCard());
-      dealer.push(drawCard());
-  }
+  // for (var i = 0; i < 2; i++) {
+  //     player.push(drawCard());
+  //     dealer.push(drawCard());
+  // }
+  player = [drawCard(), drawCard()]
+  dealer = [drawCard(), drawCard()]
   showHands()
 }
 function dealAnotherCard(hand) {

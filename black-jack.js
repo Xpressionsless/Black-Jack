@@ -209,6 +209,8 @@ var player = [];
 
 var playerScore = 0;
 var dealerScore = 0;
+var pBusted = false
+var dBusted = false
 
 stayGame.disabled = true
 hitGame.disabled = true
@@ -225,8 +227,14 @@ function startNewGame() {
   var dealerHasBJack = hasBlackJack(player, dealerScore) 
   if (playersHasBJack) {
     winnerArea.innerHTML = playerWins
+    newGame.disabled = false
+    stayGame.disabled = true
+    hitGame.disabled = true
   } else if(dealerHasBJack) {
     winnerArea.innerHTML = dealerWins
+    newGame.disabled = false
+    stayGame.disabled = true
+    hitGame.disabled = true
   }
   
   newGame.disabled = true
@@ -235,23 +243,37 @@ function startNewGame() {
 }
 //Determine Winner
 function determineWinner(stayed) {
-  console.log('Stay Game button clicked')
-  stayed = ture
-  return true
+  drawDealerCards()
+  var newScore = checkScore(playerScore, dealerScore)
+  var dealerBusted = isbust(dealerScore)
+  if (newScore) {
+  winnerArea.innerHTML = dealerWins
+  stayGame.disabled = true
+  newGame.disabled = false
+  hitGame.disabled = true
+} else if(pBusted) {
+  winnerArea.innerHTML = playerWins
+  stayGame.disabled = true
+  newGame.disabled = false
+  hitGame.disabled = true
+}
+  showHands()
 }
 function hitGame() {
   dealAnotherCard()
   console.log('Deck lenght is now: ' + deck.length )
-  showHands()
-  var playerBusted = isbust(playerScore)
-  var dealerBusted = isbust(dealerScore)
-  if (playerBusted) {
+  if (pBusted) {
     winnerArea.innerHTML = dealerWins
     hitGame.disabled = true
-  } else if (dealerBusted) {
+    stayGame.disabled = true
+    newGame.disabled = false
+  } else if(dBusted) {
     winnerArea.innerHTML = playerWins
     hitGame.disabled = true
+    stayGame.disabled = true
+    newGame.disabled = false
   }
+  showHands()
 }
 // Shuffler hela array och tar slumpmässig kort från tmpDeck och filla "deck" array med de
 function shuffleDeck(arr) {
@@ -266,6 +288,31 @@ function shuffleDeck(arr) {
     deck.push(arr[i])
   }
 }
+// After clicking Stay button only this method will be executed
+function drawDealerCards() {
+    dealer.push(drawCard())
+}
+// check Dealer score with player score after clicking StayGame button
+function checkScore(pScore, dScore) {
+  if (pScore <= dScore && dScore < 21) {
+    return true
+  } else {
+    return false
+  }
+}
+//Check if dealer has more Score than player or is Busted
+function drawGame(pScore, dScore) {
+  if ((dScore >= pScore) && (dScore <=21)) {
+    return true
+  }
+}
+function hitGameEvent() {
+  ClearTable()
+  dealAnotherCard()
+  showHands()
+  console.log('Player and Dealer length in showHands() function: ' + player.length + "\n" + dealer.length);
+}
+
 function drawCard() {
   return deck.shift();
 }
@@ -287,6 +334,8 @@ function showHands() {
   ClearTable();
   playerScore = calculateHand(player)
   dealerScore = calculateHand(dealer)
+  pBusted = isbust(playerScore)
+  dBusted = isbust(dealerScore)
   showHand(player, playerScore)
   showHand(dealer, dealerScore)
 }
@@ -302,13 +351,6 @@ function dealAnotherCard(hand) {
   dealer.push(drawCard())
 }
 
-function hitGameEvent() {
-  ClearTable()
-  dealAnotherCard()
-  dealAnotherCard()
-  showHands()
-  console.log('Player and Dealer length in showHands() function: ' + player.length + "\n" + dealer.length);
-}
 // find BlackJack
 function hasBlackJack(hand, score) {
   if((hand.length === 2) && (score === 21) ) {
@@ -335,5 +377,6 @@ function calculateHand(cards) {
       }
     }
   })
+  
   return score;
 }
